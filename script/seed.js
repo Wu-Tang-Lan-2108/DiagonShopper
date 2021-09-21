@@ -3,7 +3,7 @@
 require("dotenv").config();
 const {
   db,
-  models: { User },
+  models: { User, Product },
 } = require("../server/db");
 
 /**
@@ -20,12 +20,26 @@ async function seed() {
     User.create({ username: "murphy", password: "123" }),
   ]);
 
+  const products = await Promise.all([
+    Product.create({
+      name: "wand",
+      price: 25,
+      description: "A Wand",
+      quantity: 543,
+    }),
+    Product.create({ name: "broom", price: 50000.45 }),
+  ]);
+
   console.log(`seeded ${users.length} users`);
   console.log(`seeded successfully`);
   return {
     users: {
       cody: users[0],
       murphy: users[1],
+    },
+    products: {
+      wand: products[0],
+      broom: products[1],
     },
   };
 }
