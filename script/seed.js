@@ -21,10 +21,6 @@ async function seed() {
     User.create({ username: 'murphy', password: '123' }),
   ]);
 
-  const carts = await Promise.all([
-    Cart.create({ quantity: 3, userId: users[0].id }),
-    Cart.create({ quantity: 2, userId: users[1].id }),
-  ]);
   const products = await Promise.all([
     Product.create({
       name: 'Shield',
@@ -37,6 +33,19 @@ async function seed() {
       quantity: 1,
       price: 9,
       description: 'a wand',
+    }),
+  ]);
+
+  const carts = await Promise.all([
+    Cart.create({
+      quantity: 3,
+      userId: users[0].id,
+      productId: products[0].id,
+    }),
+    Cart.create({
+      quantity: 2,
+      userId: users[1].id,
+      productId: products[0].id,
     }),
   ]);
 
