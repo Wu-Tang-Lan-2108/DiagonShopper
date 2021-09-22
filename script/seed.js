@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-require("dotenv").config();
+require('dotenv').config();
 const {
   db,
-  models: { User },
-} = require("../server/db");
+  models: { User, Cart },
+} = require('../server/db');
 
 /**
  * seed - this function clears the database, updates tables to
@@ -12,12 +12,17 @@ const {
  */
 async function seed() {
   await db.sync({ force: true }); // clears db and matches models to tables
-  console.log("db synced!");
+  console.log('db synced!');
 
   // Creating Users
   const users = await Promise.all([
-    User.create({ username: "cody", password: "123" }),
-    User.create({ username: "murphy", password: "123" }),
+    User.create({ username: 'cody', password: '123' }),
+    User.create({ username: 'murphy', password: '123' }),
+  ]);
+
+  const carts = await Promise.all([
+    Cart.create({ quantity: 3, userId: users[0].id }),
+    Cart.create({ quantity: 2, userId: users[1].id }),
   ]);
 
   console.log(`seeded ${users.length} users`);
@@ -36,16 +41,16 @@ async function seed() {
  The `seed` function is concerned only with modifying the database.
 */
 async function runSeed() {
-  console.log("seeding...");
+  console.log('seeding...');
   try {
     await seed();
   } catch (err) {
     console.error(err);
     process.exitCode = 1;
   } finally {
-    console.log("closing db connection");
+    console.log('closing db connection');
     await db.close();
-    console.log("db connection closed");
+    console.log('db connection closed');
   }
 }
 
