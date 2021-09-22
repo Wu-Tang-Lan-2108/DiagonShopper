@@ -8,28 +8,39 @@ class SingleProduct extends React.Component {
   }
   componentDidMount() {
     try {
-      this.props.getSingleProduct(this.props.params.id);
+      this.props.getSingleProduct(this.props.match.params.id);
     } catch (err) {
+      console.log("12: "+this.props.match.params.id);
       console.log(err);
     }
   }
 
   render() {
+    console.log(this.props);
     return (
-      <div>
-        <ul>
-          <li>{this.props.product.name}</li>
-          <li>{this.props.product.description}</li>
-          <li>{this.props.product.quantity}</li>
-          <li>{this.props.product.price}</li>
-        </ul>
-      </div>
+      <div/>
+      // {this.props.product ? (
+      //   <div>
+      //   <ul>
+      //     <li>{this.props.product.name}</li>
+      //     <li>{this.props.product.description}</li>
+      //     <li>{this.props.product.quantity}</li>
+      //     <li>{this.props.product.price}</li>
+      //   </ul>
+      // </div>
+      // ):(
+      //   <React.Fragment/>
+      // )}
     );
   }
 }
 
-mapDispatchToProps = dispatch => ({
-  getSingleProduct: product => dispatch(fetchSingleProduct(product)),
+const mapDispatchToProps = dispatch => ({
+  getSingleProduct: (product) => dispatch(fetchSingleProduct(product)),
 });
 
-export default connect(null, mapDispatchToProps)(SingleProduct);
+const mapState = (state) => ({
+  product: state.singleProductReducer
+})
+
+export default connect(mapState, mapDispatchToProps)(SingleProduct);

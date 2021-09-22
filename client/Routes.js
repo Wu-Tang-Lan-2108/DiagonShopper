@@ -23,10 +23,10 @@ class Routes extends Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Redirect to="/home" />
-            <Route path="/products/:id" component={SingleProduct} />
           </Switch>
         ) : (
           <Switch>
+            <Route path="/products/:id" component={SingleProduct} />
             <Route path="/" exact component={Login} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />

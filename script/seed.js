@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').config();
+
 const {
   db,
   models: { User, Product },
@@ -20,6 +21,11 @@ async function seed() {
     User.create({ username: 'murphy', password: '123' }),
   ]);
 
+  const products = await Promise.all([
+    Product.create({ name: 'Shield', quantity: 2, price: 2.99, description: "description"}),
+    Product.create({ name: 'Wand', quantity: 1, price: 9, description: 'a wand'})
+  ]);
+
   console.log(`seeded ${users.length} users`);
   console.log(`seeded successfully`);
   return {
@@ -27,6 +33,10 @@ async function seed() {
       cody: users[0],
       murphy: users[1],
     },
+    products: {
+      shield: products[0],
+      wand: products[1]
+    }
   };
 }
 
