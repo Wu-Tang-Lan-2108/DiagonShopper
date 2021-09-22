@@ -19,7 +19,6 @@ export const fetchSingleProduct = id => async dispatch => {
     console.log("Thunk: ",data)
     dispatch(setProduct(data));
   } catch (error) {
-    console.log("*************")
     console.log(error);
   }
 };
