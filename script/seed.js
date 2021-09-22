@@ -1,10 +1,11 @@
-"use strict";
+'use strict';
 
-require("dotenv").config();
+require('dotenv').config();
+
 const {
   db,
   models: { User, Product },
-} = require("../server/db");
+} = require('../server/db');
 
 /**
  * seed - this function clears the database, updates tables to
@@ -12,22 +13,27 @@ const {
  */
 async function seed() {
   await db.sync({ force: true }); // clears db and matches models to tables
-  console.log("db synced!");
+  console.log('db synced!');
 
   // Creating Users
   const users = await Promise.all([
-    User.create({ username: "cody", password: "123" }),
-    User.create({ username: "murphy", password: "123" }),
+    User.create({ username: 'cody', password: '123' }),
+    User.create({ username: 'murphy', password: '123' }),
   ]);
 
   const products = await Promise.all([
     Product.create({
-      name: "wand",
-      price: 25,
-      description: "A Wand",
-      quantity: 543,
+      name: 'Shield',
+      quantity: 2,
+      price: 2.99,
+      description: 'description',
     }),
-    Product.create({ name: "broom", price: 50000.45 }),
+    Product.create({
+      name: 'Wand',
+      quantity: 1,
+      price: 9,
+      description: 'a wand',
+    }),
   ]);
 
   console.log(`seeded ${users.length} users`);
@@ -38,8 +44,8 @@ async function seed() {
       murphy: users[1],
     },
     products: {
-      wand: products[0],
-      broom: products[1],
+      shield: products[0],
+      wand: products[1],
     },
   };
 }
@@ -50,16 +56,16 @@ async function seed() {
  The `seed` function is concerned only with modifying the database.
 */
 async function runSeed() {
-  console.log("seeding...");
+  console.log('seeding...');
   try {
     await seed();
   } catch (err) {
     console.error(err);
     process.exitCode = 1;
   } finally {
-    console.log("closing db connection");
+    console.log('closing db connection');
     await db.close();
-    console.log("db connection closed");
+    console.log('db connection closed');
   }
 }
 
