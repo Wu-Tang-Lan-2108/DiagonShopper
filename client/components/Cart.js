@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import { connect } from 'react-redux';
 import { fetchCart } from '../store/cart';
 import SingleCart from './SingleCart';
@@ -14,12 +14,13 @@ class Cart extends React.Component {
         <ul>
           {this.props.loadCart.map((cart) => (
             <li key={cart.id}>
-              <SingleCart product={cart.product} />
+              <SingleCart product={cart} />
             </li>
           ))}
         </ul>
         <div>
           <p>
+            total-
             {this.props.loadCart.reduce((accumulator, currentValue) => {
               return (
                 accumulator + currentValue.product.price * currentValue.quantity
