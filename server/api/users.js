@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const {
-  models: { User, Cart },
+  models: { User, CartItem, Order, Product },
 } = require('../db');
-const Product = require('../db/models/Product');
 module.exports = router;
 
 router.get('/', async (req, res, next) => {
@@ -19,12 +18,17 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:userId/cart', async (req, res, next) => {
+router.get('/:userId/:orderId/cart', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.userId, {
-      include: { model: Cart, include: { model: Product } },
+      include: {
+        model: Order,
+        where: { id: req.params.orderId },
+        include: { model: CartItem, include: { model: Product } },
+      },
     });
-    res.send(user.carts);
+    console.log(req.params);
+    res.send(user.orders);
   } catch (error) {
     next(error);
   }

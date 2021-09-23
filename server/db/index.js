@@ -9,6 +9,7 @@ const Order = require('./models/Order')
 
 //associations could go here!
 Product.hasMany(CartItem);
+CartItem.belongsTo(Product)
 CartItem.belongsTo(Order)
 Order.hasMany(CartItem)
 Order.belongsTo(User)
