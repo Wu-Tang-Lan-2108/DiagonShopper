@@ -18,12 +18,11 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:userId/:orderId/cart', async (req, res, next) => {
+router.get('/:userId/order', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.userId, {
       include: {
         model: Order,
-        where: { id: req.params.orderId },
         include: { model: CartItem, include: { model: Product } },
       },
     });

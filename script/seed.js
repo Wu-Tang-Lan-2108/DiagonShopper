@@ -31,13 +31,13 @@ async function seed() {
     Product.create({
       name: 'Shield',
       quantity: 2,
-      price: 2.99,
+      price: 299,
       description: 'description',
     }),
     Product.create({
       name: 'Wand',
       quantity: 1,
-      price: 9,
+      price: 900,
       description: 'a wand',
     }),
   ]);
