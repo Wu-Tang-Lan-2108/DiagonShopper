@@ -4,8 +4,9 @@ require('dotenv').config();
 
 const {
   db,
-  models: { User, Product, Cart },
+  models: { User, Product, CartItem },
 } = require('../server/db');
+const Order = require('../server/db/models/Order');
 
 /**
  * seed - this function clears the database, updates tables to
@@ -20,6 +21,11 @@ async function seed() {
     User.create({ username: 'cody', password: '123' }),
     User.create({ username: 'murphy', password: '123' }),
   ]);
+
+  const orders = await Promise.all([
+    Order.create({userId: users[0].id}),
+    Order.create({userId: users[1].id})
+  ])
 
   const products = await Promise.all([
     Product.create({
@@ -37,14 +43,15 @@ async function seed() {
   ]);
 
   const carts = await Promise.all([
-    Cart.create({
+    CartItem.create({
       quantity: 3,
-      userId: users[0].id,
       productId: products[0].id,
+      orderId: orders[0].id
+
     }),
-    Cart.create({
+    CartItem.create({
       quantity: 2,
-      userId: users[1].id,
+      orderId: orders[1].id,
       productId: products[0].id,
     }),
   ]);
