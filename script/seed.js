@@ -29,6 +29,19 @@ async function seed() {
       description: 'description',
     }),
     Product.create({
+      name: 'Spear',
+      quantity: 3,
+      price: 5.99,
+      description: 'description',
+    }),
+    Product.create({
+      name: 'Sword',
+      quantity: 4,
+      price: 1.99,
+      description: 'description',
+    }),
+
+    Product.create({
       name: 'Wand',
       quantity: 1,
       price: 9,
@@ -37,6 +50,7 @@ async function seed() {
   ]);
 
   console.log(`seeded ${users.length} users`);
+  console.log(`seeded ${products.length} products`);
   console.log(`seeded successfully`);
   return {
     users: {
@@ -45,7 +59,9 @@ async function seed() {
     },
     products: {
       shield: products[0],
-      wand: products[1],
+      Spear: products[1],
+      Sword: products[2],
+      wand: products[3],
     },
   };
 }
