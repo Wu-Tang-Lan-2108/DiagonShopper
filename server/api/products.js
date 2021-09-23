@@ -27,24 +27,31 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     //object of product info is req.body
-    const product = await Product.create(req.body)
-    res.json(product)
-  } catch (err) { next(err) }
-})
+    const product = await Product.create(req.body);
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.put('/:id', async (req, res, next) => {
   try {
     //object of product update is req.body
-    const product = await Product.findByPk(req.params.id)
-    product.update(req.body);
-    res.json(product);
-  } catch (err) { next(err) }
-})
+    await Product.update(req.body, { where: { id: req.params.id } });
+    const product = await Product.findByPk(req.params.id);
+    res.send(product);
+  } catch (err) {
+    next(err);
+  }
+});
 
-// router.delete('/:id', async (req, res, next) => {
-//   try {
-//     const product = await Product.findByPk(req.body.id)
-//   } catch (err) { next(err) }
-// })
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const product = await Product.destroy({ where: { id: req.params.id } });
+    res.send(product);
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;
