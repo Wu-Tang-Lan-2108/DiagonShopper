@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchOrder } from '../store/order';
+import { deleteCartItem, fetchOrder } from '../store/order';
 import SingleCart from './SingleCart';
 
 class Order extends React.Component {
@@ -17,15 +17,18 @@ class Order extends React.Component {
               ...acc,
               ...cur.cartItems.map((cartItem) => {
                 return (
-                <SingleCart
-                  product={{
-                    name: cartItem.product.name,
-                    price: cartItem.product.price / 100,
-                    quantity: cartItem.quantity,
-                  }}
-                  key={cartItem.id}
-                />
-              )}),
+                  <SingleCart
+                    product={{
+                      name: cartItem.product.name,
+                      price: cartItem.product.price / 100,
+                      quantity: cartItem.quantity,
+                      id: cartItem.id,
+                      deleteCartItem: this.props.deleteCartItem,
+                    }}
+                    key={cartItem.id}
+                  />
+                );
+              }),
             ];
           }, [])}
         </ul>
@@ -34,8 +37,9 @@ class Order extends React.Component {
             total-
             {this.props.loadOrder.reduce((accumulator, currentValue) => {
               return (
-                accumulator + currentValue.cartItems.reduce((acc, cur) => {
-                  return acc + (cur.quantity * cur.product.price)
+                accumulator +
+                currentValue.cartItems.reduce((acc, cur) => {
+                  return acc + cur.quantity * cur.product.price;
                 }, 0)
               );
             }, 0) / 100}
@@ -52,5 +56,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getOrder: (userId) => dispatch(fetchOrder(userId)),
+  deleteCartItem: (cartItemId) => dispatch(deleteCartItem(cartItemId)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Order);
