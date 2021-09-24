@@ -15,6 +15,19 @@ class UpdateProductForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    const product = this.props.product;
+    if (prevProps.product !== product) {
+      //prevProps.product.name?
+      this.setState({
+        name: product.name || '',
+        price: product.price || '',
+        description: product.description || '',
+        quantity: product.quantity || '',
+      });
+    }
+  }
+
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value,
@@ -23,7 +36,9 @@ class UpdateProductForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.makeProduct({ ...this.state });
+    let product = this.props.product;
+    this.props.updateProduct(product);
+    this.props.onProductChange(product);
   }
 
   render() {
