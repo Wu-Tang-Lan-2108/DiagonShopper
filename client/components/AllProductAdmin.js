@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchProducts, delProduct } from '../store/allProducts';
 import { Link } from 'react-router-dom';
+import AddProductForm from './AddProduct';
 
 class AllProductAdmin extends React.Component {
   constructor() {
@@ -36,6 +37,7 @@ class AllProductAdmin extends React.Component {
                 </li>
               );
             })}
+            <AddProductForm />
           </ul>
         ) : (
           <React.Fragment />
