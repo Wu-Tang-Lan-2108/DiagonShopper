@@ -31,6 +31,7 @@ class UpdateProductForm extends React.Component {
     const { handleChange, handleSubmit } = this;
     return (
       <div>
+        <h2>Update form</h2>
         <form onSubmit={handleSubmit}>
           <label hmtlfor="name">Name: </label>
           <input name="name" onChange={handleChange} value={name} />
@@ -55,10 +56,16 @@ class UpdateProductForm extends React.Component {
   }
 }
 
-const mapDispatch = (dispatch) => {
+const mapState = (state) => {
   return {
-    makeProduct: (product) => dispatch(makeProduct(product)),
+    product: state.product,
   };
 };
 
-export default connect(null, mapDispatch)(UpdateProductForm);
+const mapDispatch = (dispatch) => {
+  return {
+    UpdateProduct: (product) => dispatch(updProduct(product)),
+  };
+};
+
+export default connect(mapState, mapDispatch)(UpdateProductForm);
