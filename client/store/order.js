@@ -4,6 +4,7 @@ import axios from 'axios';
 const SET_ORDER = 'SET_ORDER';
 const DELETE_ORDER = 'DELETE_ORDER';
 const REMOVE_ORDER_ITEM = 'REMOVE_ORDER_ITEM';
+const UPDATE_ORDER_ITEM = 'UPDATE_ORDER_ITEM';
 // Actions
 const setOrder = (order) => {
   return {
@@ -25,6 +26,22 @@ const removeOrderItem = (cartItemId) => {
     cartItemId,
   };
 };
+
+const updateOrderItem = (cartItem) => {
+  return {
+    type: UPDATE_ORDER_ITEM,
+    cartItem,
+  }
+}
+
+export const updateQty = (updateObj) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.put(`/api/cartItem/${updateObj.cartItemId}`, { quantity: updateObj.quantity });
+      dispatch(updateOrderItem(data))
+    } catch (error) { console.log(error) }
+  }
+}
 
 export const fetchOrder = (userId) => {
   return async (dispatch) => {
@@ -72,9 +89,20 @@ export default (state = [], action) => {
       return state.reduce((acc, cur) => {
         return [
           ...acc,
-          ...cur.filter((cartItem) => cartItem.id !== action.cartItemId),
+          ...cur.cartItems.filter((cartItem) => cartItem.id !== action.cartItemId),
         ];
       }, []);
+    case UPDATE_ORDER_ITEM:
+      return state.reduce((acc, cur) => {
+      return [
+        ...acc,
+        ...cur.cartItems.map((cartItem) => {
+          if(cartItem.id === action.cartItem.id){
+            return action.cartItem
+          }
+        })
+      ]
+    }, [])
     default:
       return state;
   }

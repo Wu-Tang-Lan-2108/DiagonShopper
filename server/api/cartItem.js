@@ -29,6 +29,7 @@ router.put('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
   try {
+    console.log('it hit here')
     await CartItem.destroy({ where: { id: req.params.id } });
     res.sendStatus(204);
   } catch (err) {
