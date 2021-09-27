@@ -1,12 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchProducts } from '../store/allProducts';
+import { fetchProducts, delProduct } from '../store/allProducts';
 import { Link } from 'react-router-dom';
 import AddProductForm from './AddProduct';
-class AllProducts extends React.Component {
+
+class AllProductAdmin extends React.Component {
+  constructor() {
+    super();
+  }
+
   componentDidMount() {
     this.props.fetchProducts();
   }
+
+  // this.handleDelete(id){
+  //   this.props.delProduct()
+  // }
 
   render() {
     return (
@@ -18,6 +27,12 @@ class AllProducts extends React.Component {
                 <li key={product.id}>
                   <Link to={`/products/${product.id}`}>
                     <h2>{product.name}</h2>
+                    <button
+                      type="button"
+                      onClick={() => this.props.deleteProduct(product.id)}
+                    >
+                      Delete
+                    </button>
                   </Link>
                 </li>
               );
@@ -35,6 +50,7 @@ class AllProducts extends React.Component {
 const mapDispatch = (dispatch) => {
   return {
     fetchProducts: () => dispatch(fetchProducts()),
+    deleteProduct: (id) => dispatch(delProduct(id)),
   };
 };
 
@@ -44,4 +60,4 @@ const mapState = (state) => {
   };
 };
 
-export default connect(mapState, mapDispatch)(AllProducts);
+export default connect(mapState, mapDispatch)(AllProductAdmin);
