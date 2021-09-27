@@ -5,6 +5,7 @@ const SET_ORDER = 'SET_ORDER';
 const DELETE_ORDER = 'DELETE_ORDER';
 const REMOVE_ORDER_ITEM = 'REMOVE_ORDER_ITEM';
 const UPDATE_ORDER_ITEM = 'UPDATE_ORDER_ITEM';
+
 // Actions
 const setOrder = (order) => {
   return {
@@ -34,6 +35,31 @@ const updateOrderItem = (cartItem) => {
   };
 };
 
+export const createOrder = (userId) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post('/api/orders', { userId });
+      dispatch(setOrder(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const createCartItem = (orderId, productId) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post('/api/cartItems', {
+        productId,
+        orderId,
+      });
+      dispatch(updateOrderItem(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const updateQty = (updateObj) => {
   return async (dispatch) => {
     try {
@@ -55,7 +81,9 @@ export const fetchOrder = (userId) => {
       const { data } = await axios.get(`/api/users/${userId}/order`, {
         headers: { authorization: token },
       });
-      dispatch(setOrder(data));
+      if (data) {
+        dispatch(setOrder(data));
+      } else dispatch(createOrder(userId));
     } catch (error) {
       console.log(error);
     }
