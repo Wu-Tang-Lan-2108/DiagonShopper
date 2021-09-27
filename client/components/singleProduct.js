@@ -7,22 +7,21 @@ class SingleProduct extends React.Component {
     super();
     this.state = {
       loading: true,
-    }
+    };
   }
   componentDidMount() {
     try {
       this.props.getSingleProduct(this.props.match.params.id);
-      this.setState({loading: false})
+      this.setState({ loading: false });
     } catch (err) {
       console.log(err);
     }
   }
 
   render() {
-    if(this.state.loading)
-      return 'loading'
+    if (this.state.loading) return 'loading';
     return (
-        <div>
+      <div>
         <ul>
           <li>{this.props.product.name}</li>
           <li>{this.props.product.description}</li>
@@ -34,12 +33,12 @@ class SingleProduct extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getSingleProduct: (product) => dispatch(fetchSingleProduct(product)),
 });
 
 const mapState = (state) => ({
-  product: state.singleProductReducer
-})
+  product: state.singleProductReducer,
+});
 
 export default connect(mapState, mapDispatchToProps)(SingleProduct);

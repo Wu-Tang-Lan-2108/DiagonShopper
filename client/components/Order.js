@@ -1,6 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { deleteCartItem, fetchOrder, updateQty } from '../store/order';
+import {
+  deleteCartItem,
+  fetchOrder,
+  updateQty,
+  deleteOrder,
+} from '../store/order';
 import SingleCart from './SingleCart';
 
 class Order extends React.Component {
@@ -45,7 +50,12 @@ class Order extends React.Component {
               );
             }, 0) / 100}
           </p>
-          <button type="button">purchase</button>
+          <button
+            type="button"
+            onClick={() => this.props.deleteOrder(this.props.loadOrder[0].id)}
+          >
+            purchase
+          </button>
         </div>
       </div>
     );
@@ -59,5 +69,6 @@ const mapDispatchToProps = (dispatch) => ({
   getOrder: (userId) => dispatch(fetchOrder(userId)),
   deleteCartItem: (cartItemId) => dispatch(deleteCartItem(cartItemId)),
   updateCartItemQty: (qtyObj) => dispatch(updateQty(qtyObj)),
+  deleteOrder: (orderId) => dispatch(deleteOrder(orderId)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Order);
