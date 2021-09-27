@@ -73,8 +73,10 @@ export function makeProduct(product) {
 export function delProduct(id) {
   return async (dispatch) => {
     try {
-      const { data } = await axios.delete(`/api/products/${id}`);
-      console.log('this is the thunk', data);
+      const token = window.localStorage.getItem('token');
+      const { data } = await axios.delete(`/api/products/${id}`, {
+        headers: { authorization: token },
+      });
       dispatch(deleteProduct(data));
     } catch (error) {
       console.log(error);

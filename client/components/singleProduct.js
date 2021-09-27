@@ -27,7 +27,6 @@ class SingleProduct extends React.Component {
 
   handleProductChange(product) {
     this.setState(product);
-    console.log("***********")
   }
 
   render() {

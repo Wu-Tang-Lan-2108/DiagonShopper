@@ -20,7 +20,6 @@ const updSingleProduct = product => ({ type: UPDATE_SINGLE_PRODUCT, product });
 export const fetchSingleProduct = id => async dispatch => {
   try {
     const { data } = await Axios.get(`/api/products/${id}`);
-    console.log("Thunk: ",data)
     dispatch(setProduct(data));
   } catch (error) {
     console.log(error);

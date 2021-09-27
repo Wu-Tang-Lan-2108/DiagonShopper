@@ -1,7 +1,20 @@
 const router = require('express').Router();
 const {
-  models: { Product },
+  models: { Product, User },
 } = require('../db');
+
+const requireAdminToken = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization;
+    const user = await User.findByToken(token);
+    req.user = user;
+    console.log(user);
+    next();
+  } catch (error) {
+    console.log("middleware error");
+    next(error);
+  }
+};
 
 // /api/products
 router.get('/', async (req, res, next) => {
@@ -45,8 +58,12 @@ router.put('/:id', async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireAdminToken, async (req, res, next) => {
   try {
+    console.log(req.user);
+    if (req.user.type !== 'admin') {
+      throw new Error('Unauthorized');
+    }
     const product = await Product.findByPk(req.params.id);
     await product.destroy();
     res.send(product);

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { updateSingleProduct } from '../store/singleProduct';
 import { delProduct } from '../store/allProducts';
-import { useHistory } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
 class UpdateProductForm extends React.Component {
@@ -22,7 +21,6 @@ class UpdateProductForm extends React.Component {
   componentDidUpdate(prevProps) {
     const product = this.props.item;
     if (prevProps.item !== product) {
-      //prevProps.product.name?
       this.setState({
         name: product.name || '',
         price: product.price || '',
@@ -77,7 +75,6 @@ class UpdateProductForm extends React.Component {
         <button type="button" onClick={
           () => {
             this.props.deleteProduct(this.props.item.id);
-            //useHistory().push('/');
             this.setState({ redirect: '/products' });
           }
         }>Delete Item</button>

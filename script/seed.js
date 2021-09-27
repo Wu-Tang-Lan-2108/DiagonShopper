@@ -24,6 +24,12 @@ async function seed() {
     });
   }
 
+  await User.create({
+    username: 'Master',
+    password: 'master',
+    type: 'admin'
+  });
+  
   await User.bulkCreate(users);
 
   // const products = await Promise.all([
