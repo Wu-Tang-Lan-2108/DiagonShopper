@@ -4,6 +4,17 @@ const {
 } = require('../db');
 module.exports = router;
 
+const requireToken = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization;
+    const user = await User.findByToken(token);
+    req.user = user;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.get('/', async (req, res, next) => {
   try {
     const users = await User.findAll({
@@ -18,8 +29,11 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:userId/order', async (req, res, next) => {
+router.get('/:userId/order', requireToken, async (req, res, next) => {
   try {
+    if (req.user.id !== parseInt(req.params.userId)) {
+      throw new Error('Unauthorized');
+    }
     const user = await User.findByPk(req.params.userId, {
       include: {
         model: Order,

@@ -51,7 +51,10 @@ export const updateQty = (updateObj) => {
 export const fetchOrder = (userId) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/users/${userId}/order`);
+      const token = window.localStorage.getItem('token');
+      const { data } = await axios.get(`/api/users/${userId}/order`, {
+        headers: { authorization: token },
+      });
       dispatch(setOrder(data));
     } catch (error) {
       console.log(error);
