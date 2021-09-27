@@ -1,14 +1,14 @@
 const router = require('express').Router();
 const {
-  models: { CartItem },
+  models: { CartItem, Product },
 } = require('../db');
 
 // /CartItems/
 router.post('/', async (req, res, next) => {
   try {
-    const CartItem = await CartItem.create(req.body);
+    const cartItem = await CartItem.create(req.body);
     if (CartItem) {
-      res.send(CartItem);
+      res.send(cartItem);
     } else {
       next();
     }
@@ -20,8 +20,10 @@ router.post('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
   try {
     await CartItem.update(req.body, { where: { id: req.params.id } });
-    const CartItem = await CartItem.findByPk(req.params.id);
-    res.send(CartItem);
+    const cartItem = await CartItem.findByPk(req.params.id, {
+      include: { model: Product },
+    });
+    res.send(cartItem);
   } catch (err) {
     next(err);
   }
@@ -29,7 +31,6 @@ router.put('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
   try {
-    console.log('it hit here')
     await CartItem.destroy({ where: { id: req.params.id } });
     res.sendStatus(204);
   } catch (err) {

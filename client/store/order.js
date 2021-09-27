@@ -31,17 +31,22 @@ const updateOrderItem = (cartItem) => {
   return {
     type: UPDATE_ORDER_ITEM,
     cartItem,
-  }
-}
+  };
+};
 
 export const updateQty = (updateObj) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.put(`/api/cartItem/${updateObj.cartItemId}`, { quantity: updateObj.quantity });
-      dispatch(updateOrderItem(data))
-    } catch (error) { console.log(error) }
-  }
-}
+      const { data } = await axios.put(
+        `/api/cartItem/${updateObj.cartItemId}`,
+        { quantity: updateObj.quantity }
+      );
+      dispatch(updateOrderItem(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 
 export const fetchOrder = (userId) => {
   return async (dispatch) => {
@@ -87,22 +92,22 @@ export default (state = [], action) => {
       return state.filter((order) => order.id !== action.orderId);
     case REMOVE_ORDER_ITEM:
       return state.reduce((acc, cur) => {
-        return [
-          ...acc,
-          ...cur.cartItems.filter((cartItem) => cartItem.id !== action.cartItemId),
-        ];
+        const newCartItems = cur.cartItems.filter(
+          (cartItem) => cartItem.id !== action.cartItemId
+        );
+        cur.cartItems = newCartItems;
+        return [...acc, cur];
       }, []);
     case UPDATE_ORDER_ITEM:
       return state.reduce((acc, cur) => {
-      return [
-        ...acc,
-        ...cur.cartItems.map((cartItem) => {
-          if(cartItem.id === action.cartItem.id){
-            return action.cartItem
+        const newCartItems = cur.cartItems.map((cartItem) => {
+          if (cartItem.id === action.cartItem.id) {
+            return action.cartItem;
           }
-        })
-      ]
-    }, [])
+        });
+        cur.cartItems = newCartItems;
+        return [...acc, cur];
+      }, []);
     default:
       return state;
   }

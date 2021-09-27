@@ -26,7 +26,6 @@ router.get('/:userId/order', async (req, res, next) => {
         include: { model: CartItem, include: { model: Product } },
       },
     });
-    console.log(req.params);
     res.send(user.orders);
   } catch (error) {
     next(error);
