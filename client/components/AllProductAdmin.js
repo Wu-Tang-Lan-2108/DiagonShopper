@@ -41,11 +41,15 @@ class AllProductAdmin extends React.Component {
                     </button>
                    ) : (
                      <React.Fragment />
-                   )}
+                     )}
                 </li>
               );
             })}
+            {this.state.user.type === 'admin' ? (
             <AddProductForm />
+            ) : (
+              <React.Fragment />
+            )}
           </ul>
         ) : (
           <React.Fragment />
