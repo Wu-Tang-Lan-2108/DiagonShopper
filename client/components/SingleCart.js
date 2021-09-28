@@ -31,7 +31,7 @@ class SingleCart extends React.Component {
         />
         <button
           onClick={() => {
-            product.deleteCartItem(id);
+            this.props.deleteCartItem(id, product.purchasingUser);
           }}
           type="button"
         >

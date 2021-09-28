@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import order, { deleteCartItem, updateQty } from '../store/order';
-import { fetchCurrentOrder, purchaseOrder } from '../store/currentOrder';
+import {
+  fetchCurrentOrder,
+  purchaseOrder,
+  deleteCartItem,
+} from '../store/currentOrder';
 import SingleCart from './SingleCart';
 
 class Order extends React.Component {
@@ -25,8 +28,9 @@ class Order extends React.Component {
                   price: cur.product.price,
                   quantity: cur.quantity,
                   maxQuantity: cur.product.quantity,
-                  deleteCartItem: this.props.deleteCartItem,
+                  purchasingUser: this.props.loadOrder.userId,
                 }}
+                deleteCartItem={this.props.deleteCartItem}
                 update={this.props.updateCartItemQty}
                 key={cur.id}
               />,
@@ -64,7 +68,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getOrder: (userId) => dispatch(fetchCurrentOrder(userId)),
-  deleteCartItem: (cartItemId) => dispatch(deleteCartItem(cartItemId)),
+  deleteCartItem: (cartItemId, userId) =>
+    dispatch(deleteCartItem(cartItemId, userId)),
   updateCartItemQty: (qtyObj) => dispatch(updateQty(qtyObj)),
   purchaseOrder: (orderId, userId) => dispatch(purchaseOrder(orderId, userId)),
 });

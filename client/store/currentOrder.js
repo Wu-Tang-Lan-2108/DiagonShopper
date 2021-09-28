@@ -108,6 +108,20 @@ export const purchaseOrder = (orderId, userId) => {
     }
   };
 };
+
+export const deleteCartItem = (cartItemId, userId) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.delete(`/api/cartItem/${cartItemId}`);
+      if (res.status === 204) {
+        dispatch(fetchCurrentOrder(userId));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 // Reducer
 export default (state = {}, action) => {
   switch (action.type) {
