@@ -29,7 +29,10 @@ export const fetchSingleProduct = id => async dispatch => {
 export function updateSingleProduct(product) {
   return async (dispatch) => {
     try {
-      const { data } = await Axios.put(`/api/products/${product.id}`, product);
+      const token = window.localStorage.getItem('token');
+      const { data } = await Axios.put(`/api/products/${product.id}`, product, {
+        headers: { authorization: token },
+      });
       dispatch(updSingleProduct(data));
       console.log(data);
     } catch (error) {

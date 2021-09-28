@@ -50,8 +50,10 @@ export function fetchProducts() {
 export function updProduct(product) {
   return async (dispatch) => {
     try {
-      //const token = window.localStorage.getItem('token');
-      const { data } = await axios.put(`/api/products/${product.id}`, product);
+      const token = window.localStorage.getItem('token');
+      const { data } = await axios.put(`/api/products/${product.id}`, product, {
+        headers: { authorization: token },
+      });
       dispatch(updateProduct(data));
       console.log(data);
     } catch (error) {

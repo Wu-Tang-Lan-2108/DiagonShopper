@@ -50,12 +50,12 @@ router.post('/', requireAdminToken, async (req, res, next) => {
   }
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', requireAdminToken, async (req, res, next) => {
   try {
     //object of product update is req.body
-    // if (req.user.type !== 'admin') {
-    //   throw new Error('Unauthorized');
-    // }
+    if (req.user.type !== 'admin') {
+      throw new Error('Unauthorized');
+    }
     await Product.update(req.body, { where: { id: req.params.id } });
     const product = await Product.findByPk(req.params.id);
     res.send(product);
