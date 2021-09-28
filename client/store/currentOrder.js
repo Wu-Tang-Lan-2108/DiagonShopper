@@ -11,10 +11,73 @@ const setCurrentOrder = (order) => {
   };
 };
 
+export const addToCart = (order, product, userId) => {
+  return async (dispatch) => {
+    try {
+      const productId = product.id;
+      const orderId = order.id;
+      console.log(order);
+      const potentialCartItem = order.cartItems.find(
+        (cartItem) => cartItem.productId === productId
+      );
+      if (
+        potentialCartItem &&
+        product.quantity <= potentialCartItem.quantity + 1
+      ) {
+        window.alert('Not enough Stock');
+      } else {
+        if (userId) {
+          await axios.post(`/api/cartItem`, {
+            quantity: 1,
+            orderId,
+            productId,
+          });
+          const { data } = await axios.get(`/api/orders/${orderId}`);
+          window.localStorage.setItem('CURRENT_CART', JSON.stringify(data));
+          dispatch(setCurrentOrder(data));
+        } else {
+          let currentCart;
+          if (window.localStorage.getItem('CURRENT_CART')) {
+            currentCart = JSON.parse(
+              window.localStorage.getItem('CURRENT_CART')
+            );
+          } else {
+            currentCart = { status: 'CURRENT', cartItems: [], userId: 0 };
+          }
+          currentCart.cartItems.push({ orderId, productId });
+          window.localStorage.setItem(
+            `CURRENT_CART`,
+            JSON.stringify(currentCart)
+          );
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const fetchCurrentOrder = (userId) => {
   return async (dispatch) => {
     try {
+      if (!userId) {
+        if (window.localStorage.getItem('CURRENT_ORDER')) {
+          dispatch(
+            setCurrentOrder(
+              JSON.parse(window.localStorage.getItem('CURRENT_ORDER'))
+            )
+          );
+        } else {
+          const currentCart = { status: 'CURRENT', cartItems: [], userId: 0 };
+          window.localStorage.setItem(
+            'CURRENT_CART',
+            JSON.stringify(currentCart)
+          );
+          dispatch(setCurrentOrder(currentCart));
+        }
+      }
       const { data } = await axios.get(`/api/orders/${userId}/current`);
+      window.localStorage.setItem('CURRENT_CART', JSON.stringify(data));
       dispatch(setCurrentOrder(data));
     } catch (error) {
       console.log(error);

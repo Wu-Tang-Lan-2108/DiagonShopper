@@ -6,11 +6,23 @@ const {
 // /CartItems/
 router.post('/', async (req, res, next) => {
   try {
-    const cartItem = await CartItem.create(req.body);
-    if (CartItem) {
-      res.send(cartItem);
+    const conflictingCartItem = await CartItem.findOne({
+      where: {
+        orderId: req.body.orderId,
+        productId: req.body.productId,
+      },
+    });
+    if (conflictingCartItem) {
+      conflictingCartItem.quantity += req.body.quantity;
+      await conflictingCartItem.save();
+      res.send(conflictingCartItem);
     } else {
-      next();
+      const cartItem = await CartItem.create(req.body);
+      if (CartItem) {
+        res.send(cartItem);
+      } else {
+        next();
+      }
     }
   } catch (err) {
     next(err);
