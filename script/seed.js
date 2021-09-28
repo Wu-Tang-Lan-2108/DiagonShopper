@@ -23,9 +23,9 @@ async function seed() {
   ]);
 
   const orders = await Promise.all([
-    Order.create({userId: users[0].id}),
-    Order.create({userId: users[1].id})
-  ])
+    Order.create({ userId: users[0].id, status: 'CURRENT' }),
+    Order.create({ userId: users[1].id, status: 'CURRENT' }),
+  ]);
 
   const products = await Promise.all([
     Product.create({
@@ -46,8 +46,7 @@ async function seed() {
     CartItem.create({
       quantity: 3,
       productId: products[0].id,
-      orderId: orders[0].id
-
+      orderId: orders[0].id,
     }),
     CartItem.create({
       quantity: 2,
