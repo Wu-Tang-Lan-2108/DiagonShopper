@@ -1,7 +1,7 @@
 'use strict';
 
 require('dotenv').config();
-
+const faker = require('faker');
 const {
   db,
   models: { User, Product, CartItem },
@@ -17,30 +17,46 @@ async function seed() {
   console.log('db synced!');
 
   // Creating Users
-  const users = await Promise.all([
-    User.create({ username: 'cody', password: '123' }),
-    User.create({ username: 'murphy', password: '123' }),
-  ]);
+  let users = [];
+  for (let i = 0; i < 100; i++) {
+    users.push({
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+    });
+  }
+
+  await User.bulkCreate(users);
+
+  // const products = await Promise.all([
+  //   Product.create({
+  //     name: 'Shield',
+  //     quantity: 2,
+  //     price: 2.99,
+  //     description: 'description',
+  //   }),
+  //   Product.create({
+  //     name: 'Wand',
+  //     quantity: 1,
+  //     price: 9,
+  //     description: 'a wand',
+  //   }),
+  // ]);
+
+  let products = [];
+  for (let i = 0; i < 100; i++) {
+    products.push({
+      name: `${faker.animal.type()} ${faker.lorem.words()}`,
+      quantity: Math.floor(Math.random() * 100),
+      price: Math.floor(Math.random() * 100000),
+      description: faker.lorem.paragraph(),
+    });
+  }
 
   const orders = await Promise.all([
     Order.create({ userId: users[0].id, status: 'CURRENT' }),
     Order.create({ userId: users[1].id, status: 'CURRENT' }),
   ]);
-
-  const products = await Promise.all([
-    Product.create({
-      name: 'Shield',
-      quantity: 2,
-      price: 299,
-      description: 'description',
-    }),
-    Product.create({
-      name: 'Wand',
-      quantity: 1,
-      price: 900,
-      description: 'a wand',
-    }),
-  ]);
+  await Product.bulkCreate(products);
 
   const carts = await Promise.all([
     CartItem.create({
