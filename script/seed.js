@@ -4,8 +4,9 @@ require('dotenv').config();
 const faker = require('faker');
 const {
   db,
-  models: { User, Product },
+  models: { User, Product, CartItem },
 } = require('../server/db');
+const Order = require('../server/db/models/Order');
 
 /**
  * seed - this function clears the database, updates tables to
@@ -51,7 +52,24 @@ async function seed() {
     });
   }
 
+  const orders = await Promise.all([
+    Order.create({ userId: users[0].id, status: 'CURRENT' }),
+    Order.create({ userId: users[1].id, status: 'CURRENT' }),
+  ]);
   await Product.bulkCreate(products);
+
+  const carts = await Promise.all([
+    CartItem.create({
+      quantity: 3,
+      productId: products[0].id,
+      orderId: orders[0].id,
+    }),
+    CartItem.create({
+      quantity: 2,
+      orderId: orders[1].id,
+      productId: products[0].id,
+    }),
+  ]);
 
   console.log(`seeded ${users.length} users`);
   console.log(`seeded successfully`);
