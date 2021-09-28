@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchProducts } from '../store/allProducts';
 import { Link } from 'react-router-dom';
+
+import { Grid, Card, CardHeader, Typography, Button, Divider, CardMedia } from '@mui/material'
+
 class AllProducts extends React.Component {
   componentDidMount() {
     this.props.fetchProducts();
@@ -10,21 +13,50 @@ class AllProducts extends React.Component {
   render() {
     return (
       <div>
+
+
         {this.props.products ? (
-          <ul>
+
+          <Grid container spacing={2} sx={{
+            alignContent: 'center',
+          }}>
             {this.props.products.map((product) => {
+              let productPrice = product.price.toString().slice(0,-2) + '.' + product.price.toString().slice(-2)
               return (
-                <li key={product.id}>
-                  <Link to={`/products/${product.id}`}>
-                    <h2>{product.name}</h2>
-                  </Link>
-                </li>
+                <Grid item key={product.id} xs={6}>
+
+                  <Card>
+                    <CardHeader
+                    title={
+                    <Link to={`/products/${product.id}`}>
+                      <Typography variant="h4">
+                        {product.name}
+                      </Typography>
+                    </Link>
+                    }
+                     />
+                     <Divider />
+                     <CardMedia sx={{
+                       alignContent:"center",
+                     }}>
+                       <Typography variant="body1">
+                         Price: ${productPrice}
+                        </Typography>
+                     <Button variant="contained">
+                       Add To Cart
+                     </Button>
+                     </CardMedia>
+                  </Card>
+
+                </Grid>
               );
             })}
-          </ul>
+        </Grid>
         ) : (
           <React.Fragment />
         )}
+
+
       </div>
     );
   }
