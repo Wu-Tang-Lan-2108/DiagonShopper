@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { deleteCartItem, updateQty, deleteOrder } from '../store/order';
-import { fetchCurrentOrder } from '../store/currentOrder';
+import order, { deleteCartItem, updateQty } from '../store/order';
+import { fetchCurrentOrder, purchaseOrder } from '../store/currentOrder';
 import SingleCart from './SingleCart';
 
 class Order extends React.Component {
@@ -11,7 +11,8 @@ class Order extends React.Component {
 
   render() {
     console.log(this.props.loadOrder);
-    return this.props.loadOrder.cartItems ? (
+    return this.props.loadOrder.cartItems &&
+      this.props.loadOrder.cartItems.length >= 1 ? (
       <div>
         <ul>
           {this.props.loadOrder.cartItems.reduce((acc, cur) => {
@@ -23,6 +24,7 @@ class Order extends React.Component {
                   name: cur.product.name,
                   price: cur.product.price,
                   quantity: cur.quantity,
+                  maxQuantity: cur.product.quantity,
                   deleteCartItem: this.props.deleteCartItem,
                 }}
                 update={this.props.updateCartItemQty}
@@ -40,14 +42,19 @@ class Order extends React.Component {
           </p>
           <button
             type="button"
-            onClick={() => this.props.deleteOrder(this.props.loadOrder[0].id)}
+            onClick={() =>
+              this.props.purchaseOrder(
+                this.props.loadOrder.id,
+                this.props.loadOrder.userId
+              )
+            }
           >
             purchase
           </button>
         </div>
       </div>
     ) : (
-      <React.Fragment />
+      <p>Nothing in Cart!</p>
     );
   }
 }
@@ -59,6 +66,6 @@ const mapDispatchToProps = (dispatch) => ({
   getOrder: (userId) => dispatch(fetchCurrentOrder(userId)),
   deleteCartItem: (cartItemId) => dispatch(deleteCartItem(cartItemId)),
   updateCartItemQty: (qtyObj) => dispatch(updateQty(qtyObj)),
-  deleteOrder: (orderId) => dispatch(deleteOrder(orderId)),
+  purchaseOrder: (orderId, userId) => dispatch(purchaseOrder(orderId, userId)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Order);

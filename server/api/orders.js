@@ -88,7 +88,7 @@ router.put('/:orderId', async (req, res, next) => {
   try {
     await Order.update(req.body, { where: { id: req.params.orderId } });
     const order = await Order.findByPk(req.params.orderId, {
-      include: { model: CartItem, incldue: { model: Product } },
+      include: { model: CartItem, include: { model: Product } },
     });
     res.send(order);
   } catch (error) {

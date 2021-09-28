@@ -21,6 +21,30 @@ export const fetchCurrentOrder = (userId) => {
     }
   };
 };
+
+export const purchaseOrder = (orderId, userId) => {
+  return async (dispatch) => {
+    try {
+      const pastOrder = (
+        await axios.put(`/api/orders/${orderId}`, {
+          status: 'PAST',
+        })
+      ).data;
+      await Promise.all(
+        pastOrder.cartItems.map((cartItem) => {
+          console.log(cartItem);
+          axios.put(`/api/products/${cartItem.product.id}`, {
+            quantity: cartItem.product.quantity - cartItem.quantity,
+          });
+        })
+      );
+      const { data } = await axios.post(`/api/orders/`, { userId });
+      dispatch(setCurrentOrder(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 // Reducer
 export default (state = {}, action) => {
   switch (action.type) {

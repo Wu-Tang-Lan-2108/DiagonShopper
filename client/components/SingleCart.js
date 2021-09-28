@@ -19,6 +19,8 @@ class SingleCart extends React.Component {
         <input
           type="number"
           value={this.state.quantity}
+          min="1"
+          max={product.maxQuantity}
           onChange={(evt) => {
             this.setState({ quantity: parseInt(evt.target.value) });
             this.props.update({
