@@ -2,13 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { addToCart, fetchCurrentOrder } from '../store/currentOrder';
 import { fetchSingleProduct } from '../store/singleProduct';
+import UpdateProductForm from './UpdateProductForm';
 
 class SingleProduct extends React.Component {
   constructor() {
     super();
     this.state = {
       loading: true,
+      product: {}
     };
+    this.handleProductChange = this.handleProductChange.bind(this);
   }
   componentDidMount() {
     try {
@@ -18,6 +21,11 @@ class SingleProduct extends React.Component {
     } catch (err) {
       console.log(err);
     }
+  }
+
+
+  handleProductChange(product) {
+    this.setState(product);
   }
 
   render() {
@@ -30,6 +38,14 @@ class SingleProduct extends React.Component {
           <li>{this.props.product.quantity}</li>
           <li>{this.props.product.price}</li>
         </ul>
+        {this.props.user.type === 'admin' ? (
+          <UpdateProductForm
+            item={this.props.product}
+            onProductChange={this.handleProductChange}
+          />
+        ) : (
+          <React.Fragment />
+        )}
         <button
           type="button"
           onClick={() => {
@@ -55,6 +71,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapState = (state) => ({
+  user: state.auth,
   product: state.singleProductReducer,
   userId: state.auth.id,
   currentOrder: state.currentOrder,
