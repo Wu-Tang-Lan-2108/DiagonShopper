@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { addToCart, fetchCurrentOrder } from '../store/currentOrder';
 import { fetchSingleProduct } from '../store/singleProduct';
 import UpdateProductForm from './UpdateProductForm';
 
@@ -16,6 +17,7 @@ class SingleProduct extends React.Component {
     try {
       this.props.getSingleProduct(this.props.match.params.id);
       this.setState({ loading: false });
+      this.props.fetchCurrentOrder(this.props.userId);
     } catch (err) {
       console.log(err);
     }
@@ -44,6 +46,18 @@ class SingleProduct extends React.Component {
         ) : (
           <React.Fragment />
         )}
+        <button
+          type="button"
+          onClick={() => {
+            this.props.addToCart(
+              this.props.currentOrder,
+              this.props.product,
+              this.props.userId
+            );
+          }}
+        >
+          Add to Cart
+        </button>
       </div>
     );
   }
@@ -51,11 +65,16 @@ class SingleProduct extends React.Component {
 
 const mapDispatchToProps = (dispatch) => ({
   getSingleProduct: (product) => dispatch(fetchSingleProduct(product)),
+  fetchCurrentOrder: (userId) => dispatch(fetchCurrentOrder(userId)),
+  addToCart: (orderId, productId, userId) =>
+    dispatch(addToCart(orderId, productId, userId)),
 });
 
 const mapState = (state) => ({
   user: state.auth,
-  product: state.singleProductReducer
+  product: state.singleProductReducer,
+  userId: state.auth.id,
+  currentOrder: state.currentOrder,
 });
 
 export default connect(mapState, mapDispatchToProps)(SingleProduct);

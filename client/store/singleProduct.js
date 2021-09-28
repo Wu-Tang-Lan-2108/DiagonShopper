@@ -10,14 +10,14 @@ const UPDATE_SINGLE_PRODUCT = 'UPDATE_SINGLE_PRODUCT';
 /**
  * ACTION CREATORS
  */
-const setProduct = product => ({ type: SET_PRODUCT, product });
+const setProduct = (product) => ({ type: SET_PRODUCT, product });
 
 const updSingleProduct = product => ({ type: UPDATE_SINGLE_PRODUCT, product });
 
 /**
  * THUNK CREATORS
  */
-export const fetchSingleProduct = id => async dispatch => {
+export const fetchSingleProduct = (id) => async (dispatch) => {
   try {
     const { data } = await Axios.get(`/api/products/${id}`);
     dispatch(setProduct(data));
