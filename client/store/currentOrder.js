@@ -16,7 +16,6 @@ export const addToCart = (order, product, userId) => {
     try {
       const productId = product.id;
       const orderId = order.id;
-      console.log(order);
       const potentialCartItem = order.cartItems.find(
         (cartItem) => cartItem.productId === productId
       );
@@ -33,22 +32,54 @@ export const addToCart = (order, product, userId) => {
             productId,
           });
           const { data } = await axios.get(`/api/orders/${orderId}`);
-          window.localStorage.setItem('CURRENT_CART', JSON.stringify(data));
+          window.localStorage.setItem('CURRENT_ORDER', JSON.stringify(data));
           dispatch(setCurrentOrder(data));
         } else {
           let currentCart;
-          if (window.localStorage.getItem('CURRENT_CART')) {
+          if (window.localStorage.getItem('CURRENT_ORDER')) {
             currentCart = JSON.parse(
-              window.localStorage.getItem('CURRENT_CART')
+              window.localStorage.getItem('CURRENT_ORDER')
             );
           } else {
             currentCart = { status: 'CURRENT', cartItems: [], userId: 0 };
           }
-          currentCart.cartItems.push({ orderId, productId });
-          window.localStorage.setItem(
-            `CURRENT_CART`,
-            JSON.stringify(currentCart)
+          const fetchedProductItem = (
+            await axios.get(`/api/products/${productId}`)
+          ).data;
+          const potentialCartItemFromLS = currentCart.cartItems.find(
+            (cartItem) => cartItem.productId === productId
           );
+          console.log(potentialCartItemFromLS);
+          if (potentialCartItemFromLS) {
+            if (product.quantity < potentialCartItemFromLS.quantity + 1) {
+              window.alert('Not Enough Stock');
+            } else {
+              currentCart.cartItems = currentCart.cartItems.map((cartItem) => {
+                if (cartItem.id === potentialCartItemFromLS.id) {
+                  return { ...cartItem, quantity: cartItem.quantity + 1 };
+                }
+              });
+              window.localStorage.setItem(
+                'CURRENT_ORDER',
+                JSON.stringify(currentCart)
+              );
+            }
+          } else {
+            const biggestIndex = currentCart.cartItems.reduce((acc, cur) => {
+              return acc.id >= cur.id ? acc.id : cur.id;
+            }, 0);
+            currentCart.cartItems.push({
+              id: biggestIndex + 1,
+              orderId: 0,
+              productId: fetchedProductItem.id,
+              product: fetchedProductItem,
+              quantity: 1,
+            });
+            window.localStorage.setItem(
+              `CURRENT_ORDER`,
+              JSON.stringify(currentCart)
+            );
+          }
         }
       }
     } catch (error) {
@@ -70,15 +101,16 @@ export const fetchCurrentOrder = (userId) => {
         } else {
           const currentCart = { status: 'CURRENT', cartItems: [], userId: 0 };
           window.localStorage.setItem(
-            'CURRENT_CART',
+            'CURRENT_ORDER',
             JSON.stringify(currentCart)
           );
           dispatch(setCurrentOrder(currentCart));
         }
+      } else {
+        const { data } = await axios.get(`/api/orders/${userId}/current`);
+        window.localStorage.setItem('CURRENT_ORDER', JSON.stringify(data));
+        dispatch(setCurrentOrder(data));
       }
-      const { data } = await axios.get(`/api/orders/${userId}/current`);
-      window.localStorage.setItem('CURRENT_CART', JSON.stringify(data));
-      dispatch(setCurrentOrder(data));
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +127,6 @@ export const purchaseOrder = (orderId, userId) => {
       ).data;
       await Promise.all(
         pastOrder.cartItems.map((cartItem) => {
-          console.log(cartItem);
           axios.put(`/api/products/${cartItem.product.id}`, {
             quantity: cartItem.product.quantity - cartItem.quantity,
           });

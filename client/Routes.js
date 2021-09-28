@@ -33,6 +33,7 @@ class Routes extends Component {
             <Route path="/products/:id" component={SingleProduct} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
+            <Route path="/0/order" component={Order} />
           </Switch>
         )}
       </div>
