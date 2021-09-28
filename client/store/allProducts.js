@@ -50,6 +50,7 @@ export function fetchProducts() {
 export function updProduct(product) {
   return async (dispatch) => {
     try {
+      //const token = window.localStorage.getItem('token');
       const { data } = await axios.put(`/api/products/${product.id}`, product);
       dispatch(updateProduct(data));
       console.log(data);
@@ -62,7 +63,10 @@ export function updProduct(product) {
 export function makeProduct(product) {
   return async (dispatch) => {
     try {
-      const { data } = await axios.post('/api/products', product);
+      const token = window.localStorage.getItem('token');
+      const { data } = await axios.post('/api/products', product, {
+        headers: { authorization: token },
+      });
       dispatch(createProduct(data));
     } catch (error) {
       console.log(error);

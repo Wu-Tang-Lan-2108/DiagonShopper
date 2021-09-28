@@ -37,9 +37,12 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // /api/products CREATE PRODUCT
-router.post('/', async (req, res, next) => {
+router.post('/', requireAdminToken, async (req, res, next) => {
   try {
     //object of product info is req.body
+    if (req.user.type !== 'admin') {
+      throw new Error('Unauthorized');
+    }
     const product = await Product.create(req.body);
     res.json(product);
   } catch (err) {
@@ -50,6 +53,9 @@ router.post('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
   try {
     //object of product update is req.body
+    // if (req.user.type !== 'admin') {
+    //   throw new Error('Unauthorized');
+    // }
     await Product.update(req.body, { where: { id: req.params.id } });
     const product = await Product.findByPk(req.params.id);
     res.send(product);
@@ -60,7 +66,6 @@ router.put('/:id', async (req, res, next) => {
 
 router.delete('/:id', requireAdminToken, async (req, res, next) => {
   try {
-    console.log(req.user);
     if (req.user.type !== 'admin') {
       throw new Error('Unauthorized');
     }

@@ -8,7 +8,7 @@ class SingleProduct extends React.Component {
     super();
     this.state = {
       loading: true,
-      product: {},
+      product: {}
     };
     this.handleProductChange = this.handleProductChange.bind(this);
   }
@@ -21,9 +21,6 @@ class SingleProduct extends React.Component {
     }
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if(prev)
-  // }
 
   handleProductChange(product) {
     this.setState(product);
@@ -39,11 +36,14 @@ class SingleProduct extends React.Component {
           <li>{this.props.product.quantity}</li>
           <li>{this.props.product.price}</li>
         </ul>
-        {this.props.product ? (<UpdateProductForm
-          item={this.props.product}
-          onProductChange={this.handleProductChange}
-        />) : <React.Fragment />
-        }
+        {this.props.user.type === 'admin' ? (
+          <UpdateProductForm
+            item={this.props.product}
+            onProductChange={this.handleProductChange}
+          />
+        ) : (
+          <React.Fragment />
+        )}
       </div>
     );
   }
@@ -54,7 +54,8 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapState = (state) => ({
-  product: state.singleProductReducer,
+  user: state.auth,
+  product: state.singleProductReducer
 });
 
 export default connect(mapState, mapDispatchToProps)(SingleProduct);

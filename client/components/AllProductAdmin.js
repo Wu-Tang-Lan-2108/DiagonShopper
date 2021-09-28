@@ -7,17 +7,21 @@ import AddProductForm from './AddProduct';
 class AllProductAdmin extends React.Component {
   constructor() {
     super();
+
+    this.state = {
+      user: {}
+    }
   }
 
   componentDidMount() {
+    this.setState({
+      user: this.props.user //this could be guest
+    });
     this.props.fetchProducts();
   }
 
-  // this.handleDelete(id){
-  //   this.props.delProduct()
-  // }
-
   render() {
+    console.log("state: ",this.state)
     return (
       <div>
         {this.props.products ? (
@@ -27,13 +31,17 @@ class AllProductAdmin extends React.Component {
                 <li key={product.id}>
                   <Link to={`/products/${product.id}`}>
                     <h2>{product.name}</h2>
+                  </Link>
+                  {this.state.user.type === 'admin' ? (
                     <button
                       type="button"
                       onClick={() => this.props.deleteProduct(product.id)}
                     >
                       Delete
                     </button>
-                  </Link>
+                   ) : (
+                     <React.Fragment />
+                   )}
                 </li>
               );
             })}
@@ -57,6 +65,7 @@ const mapDispatch = (dispatch) => {
 const mapState = (state) => {
   return {
     products: state.allProducts,
+    user: state.auth
   };
 };
 
