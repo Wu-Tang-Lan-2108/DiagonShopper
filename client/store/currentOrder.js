@@ -99,7 +99,12 @@ export const fetchCurrentOrder = (userId) => {
             )
           );
         } else {
-          const currentCart = { status: 'CURRENT', cartItems: [], userId: 0 };
+          const currentCart = {
+            id: 0,
+            status: 'CURRENT',
+            cartItems: [],
+            userId: 0,
+          };
           window.localStorage.setItem(
             'CURRENT_ORDER',
             JSON.stringify(currentCart)
@@ -120,20 +125,34 @@ export const fetchCurrentOrder = (userId) => {
 export const purchaseOrder = (orderId, userId) => {
   return async (dispatch) => {
     try {
-      const pastOrder = (
-        await axios.put(`/api/orders/${orderId}`, {
-          status: 'PAST',
-        })
-      ).data;
-      await Promise.all(
-        pastOrder.cartItems.map((cartItem) => {
-          axios.put(`/api/products/${cartItem.product.id}`, {
-            quantity: cartItem.product.quantity - cartItem.quantity,
-          });
-        })
-      );
-      const { data } = await axios.post(`/api/orders/`, { userId });
-      dispatch(setCurrentOrder(data));
+      if (orderId === 0) {
+        const order = JSON.parse(window.localStorage.getItem('CURRENT_ORDER'));
+        await Promise.all(
+          order.cartItems.map((cartItem) => {
+            axios.put(`/api/products/${cartItem.product.id}`, {
+              quantity: cartItem.product.quantity - cartItem.quantity,
+            });
+          })
+        );
+        order.cartItems = [];
+        window.localStorage.setItem('CURRENT_ORDER', JSON.stringify(order));
+        dispatch(setCurrentOrder(order));
+      } else {
+        const pastOrder = (
+          await axios.put(`/api/orders/${orderId}`, {
+            status: 'PAST',
+          })
+        ).data;
+        await Promise.all(
+          pastOrder.cartItems.map((cartItem) => {
+            axios.put(`/api/products/${cartItem.product.id}`, {
+              quantity: cartItem.product.quantity - cartItem.quantity,
+            });
+          })
+        );
+        const { data } = await axios.post(`/api/orders/`, { userId });
+        dispatch(setCurrentOrder(data));
+      }
     } catch (error) {
       console.log(error);
     }
