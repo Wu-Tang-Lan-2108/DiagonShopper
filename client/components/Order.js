@@ -1,11 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  deleteCartItem,
-  fetchOrder,
-  updateQty,
-  deleteOrder,
-} from '../store/order';
+import { deleteCartItem, updateQty, deleteOrder } from '../store/order';
+import { fetchCurrentOrder } from '../store/currentOrder';
 import SingleCart from './SingleCart';
 
 class Order extends React.Component {
@@ -14,41 +10,33 @@ class Order extends React.Component {
   }
 
   render() {
-    return (
+    console.log(this.props.loadOrder);
+    return this.props.loadOrder.cartItems ? (
       <div>
         <ul>
-          {this.props.loadOrder.reduce((acc, cur) => {
+          {this.props.loadOrder.cartItems.reduce((acc, cur) => {
             return [
               ...acc,
-              ...cur.cartItems.map((cartItem) => {
-                return (
-                  <SingleCart
-                    product={{
-                      name: cartItem.product.name,
-                      price: cartItem.product.price / 100,
-                      quantity: cartItem.quantity,
-                      id: cartItem.id,
-                      deleteCartItem: this.props.deleteCartItem,
-                    }}
-                    update={this.props.updateCartItemQty}
-                    key={cartItem.id}
-                  />
-                );
-              }),
+              <SingleCart
+                product={{
+                  id: cur.id,
+                  name: cur.product.name,
+                  price: cur.product.price,
+                  quantity: cur.quantity,
+                  deleteCartItem: this.props.deleteCartItem,
+                }}
+                update={this.props.updateCartItemQty}
+                key={cur.id}
+              />,
             ];
           }, [])}
         </ul>
         <div>
           <p>
-            total-
-            {this.props.loadOrder.reduce((accumulator, currentValue) => {
-              return (
-                accumulator +
-                currentValue.cartItems.reduce((acc, cur) => {
-                  return acc + cur.quantity * cur.product.price;
-                }, 0)
-              );
-            }, 0) / 100}
+            Total: $
+            {this.props.loadOrder.cartItems.reduce((acc, cur) => {
+              return acc + (cur.quantity * cur.product.price) / 100;
+            }, 0)}
           </p>
           <button
             type="button"
@@ -58,15 +46,17 @@ class Order extends React.Component {
           </button>
         </div>
       </div>
+    ) : (
+      <React.Fragment />
     );
   }
 }
 const mapStateToProps = (state) => ({
-  loadOrder: state.order,
+  loadOrder: state.currentOrder,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getOrder: (userId) => dispatch(fetchOrder(userId)),
+  getOrder: (userId) => dispatch(fetchCurrentOrder(userId)),
   deleteCartItem: (cartItemId) => dispatch(deleteCartItem(cartItemId)),
   updateCartItemQty: (qtyObj) => dispatch(updateQty(qtyObj)),
   deleteOrder: (orderId) => dispatch(deleteOrder(orderId)),
