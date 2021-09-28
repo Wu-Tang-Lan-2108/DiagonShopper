@@ -5,6 +5,8 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import SingleProduct from './components/singleProduct';
 import { me } from './store';
+import AllProductAdmin from './components/AllProductAdmin';
+import Order from './components/Order';
 
 /**
  * COMPONENT
@@ -22,14 +24,19 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/home" component={Home} />
+            <Route exact path="/products" component={AllProductAdmin} />
+            <Route path="/:userId/order" component={Order} />
+            <Route path="/products/:id" component={SingleProduct} />
             <Redirect to="/home" />
           </Switch>
         ) : (
           <Switch>
             <Route path="/" exact component={Home} />
+            <Route exact path='/products' component={AllProductAdmin} />
             <Route path="/products/:id" component={SingleProduct} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
+            <Route path="/0/order" component={Order} />
           </Switch>
         )}
       </div>
