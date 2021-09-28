@@ -162,9 +162,18 @@ export const purchaseOrder = (orderId, userId) => {
 export const deleteCartItem = (cartItemId, userId) => {
   return async (dispatch) => {
     try {
-      const res = await axios.delete(`/api/cartItem/${cartItemId}`);
-      if (res.status === 204) {
-        dispatch(fetchCurrentOrder(userId));
+      if (userId === 0) {
+        const order = JSON.parse(window.localStorage.getItem('CURRENT_ORDER'));
+        order.cartItems = order.cartItems.filter(
+          (cartItem) => cartItem.id !== cartItemId
+        );
+        window.localStorage.setItem('CURRENT_ORDER', JSON.stringify(order));
+        dispatch(setCurrentOrder(order));
+      } else {
+        const res = await axios.delete(`/api/cartItem/${cartItemId}`);
+        if (res.status === 204) {
+          dispatch(fetchCurrentOrder(userId));
+        }
       }
     } catch (error) {
       console.log(error);
