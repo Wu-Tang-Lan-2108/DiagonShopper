@@ -16,6 +16,7 @@ export const addToCart = (order, product, userId) => {
     try {
       const productId = product.id;
       const orderId = order.id;
+      console.log(order);
       const potentialCartItem = order.cartItems.find(
         (cartItem) => cartItem.productId === productId
       );
@@ -174,6 +175,30 @@ export const deleteCartItem = (cartItemId, userId) => {
         if (res.status === 204) {
           dispatch(fetchCurrentOrder(userId));
         }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const updateQty = (cartItemInfo, userId) => {
+  return async (dispatch) => {
+    try {
+      if (userId) {
+        const { data } = await axios.put(
+          `/api/cartItem/${cartItemInfo.cartItemId}`,
+          { quantity: cartItemInfo.quantity }
+        );
+        dispatch(fetchCurrentOrder(userId));
+      } else {
+        const order = JSON.parse(window.localStorage.getItem('CURRENT_ORDER'));
+        updatedCartItems = order.cartItems.map((cartItem) => {
+          if (cartItem.id === cartItemInfo.id) {
+            cartItemInfo.quantity = cartItemInfo.quantity;
+          }
+        });
+        dispatch(setCurrentOrder(order));
       }
     } catch (error) {
       console.log(error);

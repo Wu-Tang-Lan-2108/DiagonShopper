@@ -6,7 +6,9 @@ module.exports = router;
 
 router.get('/:orderId', async (req, res, next) => {
   try {
-    const order = await Order.findByPk(req.params.orderId);
+    const order = await Order.findByPk(req.params.orderId, {
+      include: { model: CartItem, include: { model: Product } },
+    });
     res.send(order);
   } catch (error) {
     next(error);
@@ -46,8 +48,14 @@ router.get('/:userId/current', async (req, res, next) => {
           model: Product,
         },
       },
+      order: [[CartItem, 'id', 'ASC']],
     });
-    res.send(order);
+    if (order) {
+      res.send(order);
+    } else {
+      const newOrder = await Order.create({ userId: req.params.userId });
+      res.send(newOrder);
+    }
   } catch (error) {
     next(error);
   }

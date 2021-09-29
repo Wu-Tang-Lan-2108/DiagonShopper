@@ -23,10 +23,13 @@ class SingleCart extends React.Component {
           max={product.maxQuantity}
           onChange={(evt) => {
             this.setState({ quantity: parseInt(evt.target.value) });
-            this.props.update({
-              cartItemId: this.state.cartItemId,
-              quantity: parseInt(evt.target.value),
-            });
+            this.props.update(
+              {
+                cartItemId: this.state.cartItemId,
+                quantity: parseInt(evt.target.value),
+              },
+              this.props.userId
+            );
           }}
         />
         <button

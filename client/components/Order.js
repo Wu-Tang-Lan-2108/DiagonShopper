@@ -4,6 +4,7 @@ import {
   fetchCurrentOrder,
   purchaseOrder,
   deleteCartItem,
+  updateQty,
 } from '../store/currentOrder';
 import SingleCart from './SingleCart';
 
@@ -32,6 +33,7 @@ class Order extends React.Component {
                 }}
                 deleteCartItem={this.props.deleteCartItem}
                 update={this.props.updateCartItemQty}
+                userId={this.props.match.params.userId}
                 key={cur.id}
               />,
             ];
@@ -70,7 +72,7 @@ const mapDispatchToProps = (dispatch) => ({
   getOrder: (userId) => dispatch(fetchCurrentOrder(userId)),
   deleteCartItem: (cartItemId, userId) =>
     dispatch(deleteCartItem(cartItemId, userId)),
-  updateCartItemQty: (qtyObj) => dispatch(updateQty(qtyObj)),
+  updateCartItemQty: (qtyObj, userId) => dispatch(updateQty(qtyObj, userId)),
   purchaseOrder: (orderId, userId) => dispatch(purchaseOrder(orderId, userId)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Order);
