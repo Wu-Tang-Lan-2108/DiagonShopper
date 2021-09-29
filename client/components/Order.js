@@ -5,6 +5,7 @@ import {
   purchaseOrder,
   deleteCartItem,
 } from '../store/currentOrder';
+import { updateQty } from '../store/order';
 import SingleCart from './SingleCart';
 
 class Order extends React.Component {

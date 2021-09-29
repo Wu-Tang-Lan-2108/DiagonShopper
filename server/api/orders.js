@@ -47,7 +47,12 @@ router.get('/:userId/current', async (req, res, next) => {
         },
       },
     });
-    res.send(order);
+    if (order) {
+      res.send(order);
+    } else {
+      const newOrder = await Order.create({ userId: req.params.userId });
+      res.send(newOrder);
+    }
   } catch (error) {
     next(error);
   }

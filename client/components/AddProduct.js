@@ -28,6 +28,11 @@ class AddProductForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     this.props.makeProduct({ ...this.state });
+    this.setState({
+    name: '',
+    price: 0,
+    description: '',
+    quantity: 0,})
   }
 
   render() {
@@ -52,7 +57,7 @@ class AddProductForm extends React.Component {
           <label hmtlfor="quantity">Quantity: </label>
           <input name="quantity" onChange={handleChange} value={quantity} />
 
-          <button type="submit">Add</button>
+          <input type="submit" />
         </form>
       </div>
     );

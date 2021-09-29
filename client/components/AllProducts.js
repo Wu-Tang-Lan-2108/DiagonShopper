@@ -8,8 +8,18 @@ import { Grid, Card, CardHeader, Typography, Button, Divider, CardMedia } from '
 import AddProductForm from './AddProduct';
 
 import { addToCart, fetchCurrentOrder } from '../store/currentOrder';
+import { Box } from '@mui/system';
 class AllProducts extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      user: {}
+    }
+  }
   componentDidMount() {
+    this.setState({
+      user: this.props.user
+    });
     this.props.fetchProducts();
     this.props.fetchCurrentOrder(this.props.userId);
   }
@@ -17,13 +27,22 @@ class AllProducts extends React.Component {
   render() {
     return (
       <div>
-
-
         {this.props.products ? (
 
-          <Grid container spacing={2} sx={{
-            alignContent: 'center',
-          }}>
+          <Grid container spacing={2}>
+            {this.state.user.type === 'admin' ? (
+
+            <Grid item container xs={12} alignContent="center">
+              <Card>
+                <CardHeader
+                title="Add Product"
+                />
+                <AddProductForm />
+              </Card>
+            </Grid>
+            ) : (
+              <React.Fragment />
+            )}
             {this.props.products.map((product) => {
               let productPrice = product.price.toString().slice(0,-2) + '.' + product.price.toString().slice(-2)
               return (
@@ -40,13 +59,19 @@ class AllProducts extends React.Component {
                     }
                      />
                      <Divider />
-                     <CardMedia sx={{
-                       alignContent:"center",
-                     }}>
+                     <CardMedia>
                        <Typography variant="body1">
                          Price: ${productPrice}
                         </Typography>
-                     <Button variant="contained" onClick={() => {
+                        {this.state.user.type === 'admin' ? (
+                    <Button
+                      variant="contained"
+                      onClick={() => this.props.deleteProduct(product.id)}
+                    >
+                      Delete
+                    </Button>
+                   ) : (
+                    <Button variant="contained" onClick={() => {
                       this.props.addToCart(
                         this.props.currentOrder,
                         product,
@@ -55,6 +80,8 @@ class AllProducts extends React.Component {
                     }}>
                        Add To Cart
                      </Button>
+                     )}
+
                      </CardMedia>
                   </Card>
 
@@ -78,6 +105,7 @@ const mapDispatch = (dispatch) => {
     fetchCurrentOrder: (userId) => dispatch(fetchCurrentOrder(userId)),
     addToCart: (orderId, productId, userId) =>
       dispatch(addToCart(orderId, productId, userId)),
+    deleteProduct: (id) => dispatch(delProduct(id))
   };
 };
 
@@ -86,6 +114,7 @@ const mapState = (state) => {
     products: state.allProducts,
     userId: state.auth.id,
     currentOrder: state.currentOrder,
+    user: state.auth
   };
 };
 
