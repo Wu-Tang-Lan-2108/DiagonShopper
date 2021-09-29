@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/material';
 import React from 'react';
 import { connect } from 'react-redux';
 import { addToCart, fetchCurrentOrder } from '../store/currentOrder';
@@ -9,14 +10,20 @@ class SingleProduct extends React.Component {
     super();
     this.state = {
       loading: true,
-      product: {}
+      product: {
+        name: '',
+        description: '',
+        price: 0,
+        quantity: 0,
+      }
     };
     this.handleProductChange = this.handleProductChange.bind(this);
   }
   componentDidMount() {
     try {
       this.props.getSingleProduct(this.props.match.params.id);
-      this.setState({ loading: false });
+      this.setState({
+        loading: false,});
       this.props.fetchCurrentOrder(this.props.userId);
     } catch (err) {
       console.log(err);
@@ -30,14 +37,36 @@ class SingleProduct extends React.Component {
 
   render() {
     if (this.state.loading) return 'loading';
+
+    const { name, description, quantity, price } = this.props.product
+    // let productPrice = price.toString().slice(0,-2) + '.' + price.toString().slice(-2)
     return (
       <div>
-        <ul>
+        <Card>
+          <CardHeader
+          title={name}
+          subheader={`$${price ? (price.toString().slice(0,-2) + '.' + price.toString().slice(-2)) : price}`}
+          />
+          <CardContent>
+          <Typography variant="h6">
+              Description
+            </Typography>
+            <Typography variant="body1">
+              {description}
+            </Typography>
+            <Divider />
+            <Typography variant="body2">
+              Qty left: {quantity}
+            </Typography>
+          </CardContent>
+        </Card>
+        {/* <ul>
           <li>{this.props.product.name}</li>
           <li>{this.props.product.description}</li>
           <li>{this.props.product.quantity}</li>
           <li>{this.props.product.price}</li>
-        </ul>
+        </ul> */}
+
         {this.props.user.type === 'admin' ? (
           <UpdateProductForm
             item={this.props.product}
