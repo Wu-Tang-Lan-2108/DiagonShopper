@@ -48,6 +48,7 @@ router.get('/:userId/current', async (req, res, next) => {
           model: Product,
         },
       },
+      order: [[CartItem, 'id', 'ASC']],
     });
     if (order) {
       res.send(order);
