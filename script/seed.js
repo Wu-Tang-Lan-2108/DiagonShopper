@@ -25,6 +25,12 @@ async function seed() {
     });
   }
 
+  await User.create({
+    username: 'Master',
+    password: 'master',
+    type: 'admin'
+  });
+  
   await User.bulkCreate(users);
 
   // const products = await Promise.all([
@@ -72,6 +78,7 @@ async function seed() {
   ]);
 
   console.log(`seeded ${users.length} users`);
+  console.log(`seeded ${products.length} products`);
   console.log(`seeded successfully`);
   return {
     users: {
@@ -80,7 +87,9 @@ async function seed() {
     },
     products: {
       shield: products[0],
-      wand: products[1],
+      Spear: products[1],
+      Sword: products[2],
+      wand: products[3],
     },
   };
 }
